@@ -1,0 +1,21 @@
+.Building {
+    display: flex;
+    background-color: rgb(29, 28, 26);
+}
+
+.Building-elevator {
+    display: flex;
+    justify-content: center;
+    flex-grow: 1;
+    background-color: aliceblue;
+    border: 1px solid black;
+    border-left: 0px;
+}
+
+.Building-buttons-container {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: space-around;
+    background-color: aliceblue;
+    border: 1px solid black;
+}

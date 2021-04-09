@@ -1,0 +1,19 @@
+.Elevator {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: center;
+    border: 3px solid black;
+}
+
+.Elevator > div {
+    flex-grow: 1;
+    /* border: 1px solid rgb(71, 71, 211); */
+}
+
+.Elevator-empty-position {
+    background-color: rgb(252, 252, 252);
+}
+
+.Elevator-current-position {
+    background-color: rgb(94, 88, 88);
+}
