@@ -1,7 +1,7 @@
 # Elevator System
 
 This project is a simple elevator control system. It can be initialized with n elevators and m floors. Elevator can be ordered by clicking button with floor number. Elevator with the minimum distance will handle this order.
-Project provides a clear graphic display of elevator position.
+Project provides a clear graphic display of elevator position and elevator's door status (OPEN/CLOSE).
 ## Run
 
 You can run the system with command:
