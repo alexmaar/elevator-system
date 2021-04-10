@@ -29,14 +29,15 @@ function initializeElevatorsPositions(elevatorsCount) {
 function ElevatorSystem(props) {
     const [elevatorCount, setElevatorCount] = useState(props.elevatorCount);
     const [floorCount, setFloorCount] = useState(props.floorCount);
-    const [width, setWidth] = useState(props.elevatorCount * 90);
+    const [width, setWidth] = useState(600);
     const [height, setHeight] = useState(props.floorCount * 30);
     const [orders, setOrders] = useState(new Array(props.elevatorCount).fill(null))
+    const [buttonColors, setButtonColors] = useState(new Array(props.floorCount).fill(false))
 
 
     const [elevatorsPositions, setElevators] = useState(initializeElevatorsPositions(props.elevatorCount));
 
-    const onElevatorFloorChange = (id, floor, direction) => {
+    const onElevatorFloorChange = (id, floor, direction, handledOrder) => {
         const elevatorId = id;
         const indexToUpdate = elevatorsPositions.findIndex((elem) => { return elem.id === elevatorId });
         if (indexToUpdate >= 0) {
@@ -46,11 +47,21 @@ function ElevatorSystem(props) {
                 direction: direction
             };
 
+            if (handledOrder) {
+                let copyButtons = [...buttonColors]
+                copyButtons[handledOrder] = false;
+                setButtonColors(copyButtons);
+            }
+
             setElevators(elevatorsPositions);
+            
         }
     }
 
     const handleChangeChk = (chkId) => {
+        let copyButtons = [...buttonColors]
+        copyButtons[chkId] = true;
+        setButtonColors(copyButtons)
         let min_idx = 0;
         let min_d = distance(chkId, elevatorsPositions[0].floor, elevatorsPositions[0].direction, props.floorCount);
         for (let i = 1; i < elevatorsPositions.length; i++) {
@@ -72,14 +83,14 @@ function ElevatorSystem(props) {
     }
 
     const buildingStyle = {
-        width,
-        height
+        width: width,
+        height: height
     }
 
     const buttons = []
     for (let i = 0; i < props.floorCount; i++) {
         buttons.push(
-            <input key={i} type="button" onClick={() => handleChangeChk(i)} value={i} />
+            <input key={i} className={buttonColors[i] === true ? "Button-ordered" : "Building-handled"} type="button" onClick={() => handleChangeChk(i)} value={i} />
         )
     }
 
@@ -90,7 +101,7 @@ function ElevatorSystem(props) {
 
     return (
         <div style={buildingStyle} className="Building">
-            <div className="Building-buttons-container"> {buttons} </div>
+            <div className="Building-buttons-container">{buttons} </div>
             {elevators}
         </div>
     )
