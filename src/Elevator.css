@@ -14,6 +14,10 @@
     background-color: rgb(252, 252, 252);
 }
 
-.Elevator-current-position {
+.Elevator-current-position-close {
     background-color: rgb(94, 88, 88);
+}
+
+.Elevator-current-position-open {
+    background-color: rgb(133, 24, 24);
 }

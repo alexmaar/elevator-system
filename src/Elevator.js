@@ -39,18 +39,20 @@ function initState(id) {
     return state;
 }
 
-function Elevator({ id, floorCount, width, order, onFloorChange}) {
+function Elevator({ id, floorCount, width, order, onFloorChange }) {
     const [state, setMyState] = useState(initState(id));
     useInterval(() => {
         const newState = step(state);
-        if(newState !== null){
+        if (newState !== null) {
             setMyState(newState);
             setFloor(newState.floor);
             setDirection(newState.direction);
+            setDoorState(newState.doorsState);
         }
     }, 1000);
     const [floor, setFloor] = useState(0);
     const [direction, setDirection] = useState(0);
+    const [doorState, setDoorState] = useState('CLOSED');
 
     useEffect(() => {
         if (order && !state.desiredFloors.includes(order.destFloor)) {
@@ -60,7 +62,7 @@ function Elevator({ id, floorCount, width, order, onFloorChange}) {
     }, [order, state]);
 
     useEffect(() => {
-        onFloorChange(state.id, floor ,direction);
+        onFloorChange(state.id, floor, direction);
     }, [state, floor, direction, onFloorChange])
 
 
@@ -81,6 +83,7 @@ function Elevator({ id, floorCount, width, order, onFloorChange}) {
 
         if (state.desiredFloors.length === 0) {
             state.direction = 0;
+            state.doorsState = 'CLOSED'
 
             return state;
         }
@@ -91,7 +94,7 @@ function Elevator({ id, floorCount, width, order, onFloorChange}) {
 
         if (state.doorsState === 'CLOSED' && state.floor === desiredFloor) {
             state.doorsState = 'OPEN';
-            if (state.desiredFloors.length === 0){
+            if (state.desiredFloors.length === 0) {
                 state.direction = 0;
             }
 
@@ -100,7 +103,7 @@ function Elevator({ id, floorCount, width, order, onFloorChange}) {
 
         if (state.doorsState === 'OPEN' && state.floor === desiredFloor) {
             state.desiredFloors.shift();
-            if (state.desiredFloors.length === 0){
+            if (state.desiredFloors.length === 0) {
                 state.direction = 0;
             }
             state.doorsState = 'CLOSED';
@@ -132,11 +135,11 @@ function Elevator({ id, floorCount, width, order, onFloorChange}) {
             if (i !== floor) {
                 setPossiblePlaces(prev => [...prev, <div key={i} className="Elevator-empty-position"></div>])
             } else {
-                setPossiblePlaces(prev => [...prev, <div key={i} className="Elevator-current-position"></div>])
+                setPossiblePlaces(prev => [...prev, doorState === 'OPEN' ? <div key={i} className="Elevator-current-position-open"></div> : <div key={i} className="Elevator-current-position-close"></div>])
             }
         }
-    }, [floor, floorCount, setPossiblePlaces])
-    
+    }, [floor, floorCount, doorState, setPossiblePlaces])
+
 
     return (
         <div style={elevatorStyle} className="Elevator">
