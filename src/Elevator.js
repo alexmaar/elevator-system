@@ -53,6 +53,7 @@ function Elevator({ id, floorCount, width, order, onFloorChange }) {
     const [floor, setFloor] = useState(0);
     const [direction, setDirection] = useState(0);
     const [doorState, setDoorState] = useState('CLOSED');
+    const [floorInside, setFloorInside] = useState(false);
 
     useEffect(() => {
         if (order && !state.desiredFloors.includes(order.destFloor)) {
@@ -128,6 +129,18 @@ function Elevator({ id, floorCount, width, order, onFloorChange }) {
         width: width
     }
 
+    const addDestinationFloor = (destFloor) => {
+        state.desiredFloors.push(destFloor);
+        setMyState(state)
+        let inside = false;
+        setFloorInside(inside);
+    }
+
+    const handleClick = () => {
+        let inside = true
+        setFloorInside(inside);
+    }
+
     let [possiblePlaces, setPossiblePlaces] = useState([])
     useEffect(() => {
         setPossiblePlaces([]);
@@ -135,17 +148,19 @@ function Elevator({ id, floorCount, width, order, onFloorChange }) {
             if (i !== floor) {
                 setPossiblePlaces(prev => [...prev, <div key={i} className="Elevator-empty-position"></div>])
             } else {
-                setPossiblePlaces(prev => [...prev, doorState === 'OPEN' ? <div key={i} className="Elevator-current-position-open"></div> : <div key={i} className="Elevator-current-position-close"></div>])
+                setPossiblePlaces(prev => [...prev, doorState === 'OPEN' ? <div key={i} className="Elevator-current-position-open"></div> : <div key={i} className="Elevator-current-position-close" onClick={handleClick}></div>])
             }
         }
     }, [floor, floorCount, doorState, setPossiblePlaces])
 
-
+    const buttonsInside = []
+    for (let i = 0; i < floorCount; i++) {
+        buttonsInside.push(
+            <input key={i} type="button" onClick={() => addDestinationFloor(i)} value={i} />)
+    } 
     return (
-        <div style={elevatorStyle} className="Elevator">
-            {possiblePlaces}
-        </div>
-    )
+        !floorInside ? <div style={elevatorStyle} className="Elevator"> {possiblePlaces}</div> : <div style={elevatorStyle} className="Elevator-buttons-container"> {buttonsInside}</div>
+    );
 }
 
 export default Elevator
