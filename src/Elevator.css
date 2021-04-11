@@ -7,7 +7,7 @@
 
 .Elevator > div {
     flex-grow: 1;
-    /* border: 1px solid rgb(71, 71, 211); */
+    width: 15px;
 }
 
 .Elevator-empty-position {
@@ -20,4 +20,12 @@
 
 .Elevator-current-position-open {
     background-color: rgb(133, 24, 24);
+}
+
+.Elevator-buttons-container {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: center;
+    background-color: aliceblue;
+    border: 1px solid black;
 }

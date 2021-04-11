@@ -19,3 +19,11 @@
     background-color: aliceblue;
     border: 1px solid black;
 }
+
+.Button-ordered {
+    background-color: rgb(96, 179, 212);
+}
+
+.Button-handled {
+    color: gray;
+}

@@ -34,7 +34,8 @@ function initState(id) {
         direction: 1,
         doorsState: 'CLOSED',
         desiredFloors: [],
-        floor: 0
+        floor: 0,
+        handledOrder: null
     }
     return state;
 }
@@ -48,11 +49,14 @@ function Elevator({ id, floorCount, width, order, onFloorChange }) {
             setFloor(newState.floor);
             setDirection(newState.direction);
             setDoorState(newState.doorsState);
+            setHandledOrder(newState.handledOrder);
         }
     }, 1000);
     const [floor, setFloor] = useState(0);
     const [direction, setDirection] = useState(0);
     const [doorState, setDoorState] = useState('CLOSED');
+    const [floorInside, setFloorInside] = useState(false);
+    const [handledOrder, setHandledOrder] = useState(null);
 
     useEffect(() => {
         if (order && !state.desiredFloors.includes(order.destFloor)) {
@@ -60,10 +64,6 @@ function Elevator({ id, floorCount, width, order, onFloorChange }) {
             setMyState(state);
         }
     }, [order, state]);
-
-    useEffect(() => {
-        onFloorChange(state.id, floor, direction);
-    }, [state, floor, direction, onFloorChange])
 
 
     const step = (state) => {
@@ -85,6 +85,7 @@ function Elevator({ id, floorCount, width, order, onFloorChange }) {
             state.direction = 0;
             state.doorsState = 'CLOSED'
 
+            onFloorChange(state.id, state.floor, state.direction, state.handledOrder);
             return state;
         }
 
@@ -97,7 +98,9 @@ function Elevator({ id, floorCount, width, order, onFloorChange }) {
             if (state.desiredFloors.length === 0) {
                 state.direction = 0;
             }
-
+            state.handledOrder = state.floor;
+            
+            onFloorChange(state.id, state.floor, state.direction, state.handledOrder);
             return state;
         }
 
@@ -107,25 +110,32 @@ function Elevator({ id, floorCount, width, order, onFloorChange }) {
                 state.direction = 0;
             }
             state.doorsState = 'CLOSED';
+            state.handledOrder = null;
 
+            onFloorChange(state.id, state.floor, state.direction, state.handledOrder);
             return state;
         }
 
         const dir = ((desiredFloor - state.floor) < 0) ? -1 : 1;
         const next_floor = state.floor + dir;
-
-        // just a consistency check, should never happen
-        if (next_floor < 0 || next_floor >= floorCount) return null;
-
+        
         state.floor = next_floor;
         state.direction = dir;
 
-
+        onFloorChange(state.id, state.floor, state.direction, state.handledOrder);
         return state;
     }
 
-    const elevatorStyle = {
-        width: width
+    const addDestinationFloor = (destFloor) => {
+        state.desiredFloors.push(destFloor);
+        setMyState(state)
+        let inside = false;
+        setFloorInside(inside);
+    }
+
+    const handleClick = () => {
+        let inside = true
+        setFloorInside(inside);
     }
 
     let [possiblePlaces, setPossiblePlaces] = useState([])
@@ -135,17 +145,19 @@ function Elevator({ id, floorCount, width, order, onFloorChange }) {
             if (i !== floor) {
                 setPossiblePlaces(prev => [...prev, <div key={i} className="Elevator-empty-position"></div>])
             } else {
-                setPossiblePlaces(prev => [...prev, doorState === 'OPEN' ? <div key={i} className="Elevator-current-position-open"></div> : <div key={i} className="Elevator-current-position-close"></div>])
+                setPossiblePlaces(prev => [...prev, doorState === 'OPEN' ? <div key={i} className="Elevator-current-position-open"></div> : <div key={i} className="Elevator-current-position-close" onClick={handleClick}></div>])
             }
         }
     }, [floor, floorCount, doorState, setPossiblePlaces])
 
-
+    const buttonsInside = []
+    for (let i = 0; i < floorCount; i++) {
+        buttonsInside.push(
+            <input key={i} type="button" style={{width: "100%"}}onClick={() => addDestinationFloor(i)} value={i} />)
+    } 
     return (
-        <div style={elevatorStyle} className="Elevator">
-            {possiblePlaces}
-        </div>
-    )
+        !floorInside ? <div className="Elevator"> {possiblePlaces}</div> : <div className="Elevator-buttons-container"> {buttonsInside}</div>
+    );
 }
 
 export default Elevator
