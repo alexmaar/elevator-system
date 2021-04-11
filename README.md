@@ -11,11 +11,18 @@ Project provides a clear graphic display of elevator position, elevator's door s
 ![out](https://user-images.githubusercontent.com/56414498/114317450-76328c80-9b08-11eb-9022-edada9ba07a0.gif)
 
 
-## Run
+## Installation and Setup Instructions
+
+Clone down this repository. You will need node and npm installed on your machine.
+
+Installation:
+
+```npm install```
+
 
 You can run the system with command:
 
-### `npm start`
+ ```npm start```
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
